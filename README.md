@@ -5,6 +5,7 @@ The scripts are described below:
 Input/Description/Output
 
 ### Requirements:
+This code runs on Ubuntu with Python 3.9, 3.10, and 3.11
 
 ```bash
 python -m venv venv
