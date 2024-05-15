@@ -1,5 +1,3 @@
-import pytest
-
 from clean import extract_tags
 
 
