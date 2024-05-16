@@ -3,9 +3,11 @@ A collection of functions to clean the data.
 """
 
 from typing import List, Set
+
 import pandas as pd
 
 # TODO refactor to class
+# TODO consider using argparse
 # TODO replace space with underscore in tags
 
 
@@ -142,7 +144,6 @@ if __name__ == "__main__":
     popular_tags = get_popular_tags(dat_flat_tag)
 
     # Filter tags based on popular tags
-    # TODO returns empty list?
     dat["popular_tags"] = dat["tags"].apply(
         lambda tag_list: filter_popular_tags(tag_list, popular_tags)
     )
