@@ -2,14 +2,14 @@
 A collection of functions to clean the data.
 """
 
+from typing import List, Set
 import pandas as pd
 
 # TODO refactor to class
-# TODO add type hints
 # TODO replace space with underscore in tags
 
 
-def extract_tags(categories):
+def extract_tags(categories: str) -> List[str]:
     """
     Extracts tags from a string of categories.
 
@@ -26,7 +26,7 @@ def extract_tags(categories):
     return categories.replace("['", "").replace("']", "").replace("'", "").split(", ")
 
 
-def remove_tag(tag_list, tag_to_remove="HD Porn"):
+def remove_tag(tag_list: List[str], tag_to_remove: str = "HD Porn") -> List[str]:
     """
     Removes a specific tag from a list of tags.
 
@@ -45,7 +45,7 @@ def remove_tag(tag_list, tag_to_remove="HD Porn"):
     return [tag for tag in tag_list if tag != tag_to_remove]
 
 
-def flatten_tags(tags):
+def flatten_tags(tags: List[List[str]]) -> pd.DataFrame:
     """
     Flattens a list of lists into a single list and creates a DataFrame.
 
@@ -64,7 +64,7 @@ def flatten_tags(tags):
     return df_flat_tag
 
 
-def get_tag_counts(df_flat_tag):
+def get_tag_counts(df_flat_tag: pd.DataFrame) -> pd.DataFrame:
     """
     Gets the counts of each tag from a DataFrame.
 
@@ -87,7 +87,7 @@ def get_tag_counts(df_flat_tag):
     )
 
 
-def get_popular_tags(df, quantile=0.75):
+def get_popular_tags(df: pd.DataFrame, quantile: float = 0.75) -> Set[str]:
     """
     Gets the popular tags from a DataFrame based on quantile.
 
@@ -106,7 +106,7 @@ def get_popular_tags(df, quantile=0.75):
     return set(tag_counts[tag_counts.counts >= min_appearance]["tag"])
 
 
-def filter_popular_tags(tag_list, popular_tags_set):
+def filter_popular_tags(tag_list: List[str], popular_tags_set: Set[str]) -> List[str]:
     """
     Filters a list of tags based on a set of popular tags.
 
@@ -136,12 +136,13 @@ if __name__ == "__main__":
     dat["tags"] = dat["tags"].apply(remove_tag)
 
     # Flatten tags into a DataFrame
-    dat_flat_tag = flatten_tags(dat["tags"])
+    dat_flat_tag = flatten_tags(dat["tags"]) # type: ignore
 
     # Get popular tags
     popular_tags = get_popular_tags(dat_flat_tag)
 
     # Filter tags based on popular tags
+    # TODO returns empty list?
     dat["popular_tags"] = dat["tags"].apply(
         lambda tag_list: filter_popular_tags(tag_list, popular_tags)
     )
