@@ -1,8 +1,8 @@
-<!---[![cffconvert](https://github.com/nlesc/python-template/actions/workflows/cffconvert.yml/badge.svg)](https://github.com/nlesc/python-template/actions/workflows/cffconvert.yml) 
+<!---[![cffconvert](https://github.com/nlesc/python-template/actions/workflows/cffconvert.yml/badge.svg)](https://github.com/nlesc/python-template/actions/workflows/cffconvert.yml)
+[![sonarcloud](https://github.com/ptypes-nlesc/data-profiling/actions/workflows/sonarcloud.yml/badge.svg)](https://github.com/ptypes-nlesc/data-profiling/actions/workflows/sonarcloud.yml)
 -->
 [![markdown-link-check](https://github.com/ptypes-nlesc/data-profiling/actions/workflows/markdown-link-check.yaml/badge.svg)](https://github.com/ptypes-nlesc/data-profiling/actions/workflows/markdown-link-check.yaml) 
 [![python-package](https://github.com/ptypes-nlesc/data-profiling/actions/workflows/python-package.yml/badge.svg)](https://github.com/ptypes-nlesc/data-profiling/actions/workflows/python-package.yml)
-[![sonarcloud](https://github.com/ptypes-nlesc/data-profiling/actions/workflows/sonarcloud.yml/badge.svg)](https://github.com/ptypes-nlesc/data-profiling/actions/workflows/sonarcloud.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ptypes-nlesc_data-profiling&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ptypes-nlesc_data-profiling)
 
 Data preparation and exploration scripts for the https://research-software-directory.org/projects/ptypes project. 
