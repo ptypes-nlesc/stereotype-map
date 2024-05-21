@@ -3,7 +3,8 @@ A collection of functions to clean the data.
 """
 
 from typing import List, Set
-
+from itertools import combinations
+from collections import Counter
 import pandas as pd
 
 # TODO refactor to class
@@ -126,6 +127,21 @@ def filter_popular_tags(tag_list: List[str], popular_tags_set: Set[str]) -> List
     """
     return [tag for tag in tag_list if tag in popular_tags_set]
 
+def get_tag_combinations(tags: List[List[str]]) -> Counter:
+    """
+    Gets the common tag combinations from a list of lists of tags.
+
+    Parameters
+    ----------
+        tags : list
+            list of lists of tags
+
+    Returns
+    -------
+        Counter
+            a Counter object with the tag combinations and their counts
+    """
+    return Counter(combo for tag_list in tags for combo in combinations(tag_list, 2))
 
 if __name__ == "__main__":
     # Read the data
@@ -138,7 +154,7 @@ if __name__ == "__main__":
     dat["tags"] = dat["tags"].apply(remove_tag)
 
     # Flatten tags into a DataFrame
-    dat_flat_tag = flatten_tags(dat["tags"]) # type: ignore
+    dat_flat_tag = flatten_tags(dat["tags"])  # type: ignore
 
     # Get popular tags
     popular_tags = get_popular_tags(dat_flat_tag)
@@ -149,6 +165,8 @@ if __name__ == "__main__":
     )
 
     # Filter DataFrame to include only rows where 'popular_tags' is not empty
-    dat_popular_tags = dat.loc[dat["popular_tags"].apply(lambda tag_list: tag_list != [])]
+    dat_popular_tags = dat.loc[
+        dat["popular_tags"].apply(lambda tag_list: tag_list != [])
+    ]
     dat_popular_tags.to_csv("data/dat.csv", index=False)
     print(dat_popular_tags.head())
