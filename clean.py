@@ -2,9 +2,10 @@
 A collection of functions to clean the data.
 """
 
-from typing import List, Set
-from itertools import combinations
 from collections import Counter
+from itertools import combinations
+from typing import List, Set
+
 import pandas as pd
 
 # TODO refactor to class
@@ -105,6 +106,7 @@ def get_popular_tags(df: pd.DataFrame, quantile: float = 0.75) -> Set[str]:
             a DataFrame sorted by the counts of each tag in descending order
     """
     tag_counts = get_tag_counts(df)
+    # todo add float here
     min_appearance = tag_counts.counts.quantile(quantile)
     return set(tag_counts[tag_counts.counts >= min_appearance]["tag"])
 
@@ -127,21 +129,27 @@ def filter_popular_tags(tag_list: List[str], popular_tags_set: Set[str]) -> List
     """
     return [tag for tag in tag_list if tag in popular_tags_set]
 
-def get_tag_combinations(tags: List[List[str]]) -> Counter:
+
+def get_tag_combinations(tags: List[List[str]], ntags: int = 2) -> Counter:
     """
-    Gets the common tag combinations from a list of lists of tags.
+    Gets the tag combinations from a list of lists of tags.
 
     Parameters
     ----------
         tags : list
             list of lists of tags
+        ntags : int
+            number of tags to combine
 
     Returns
     -------
         Counter
             a Counter object with the tag combinations and their counts
     """
-    return Counter(combo for tag_list in tags for combo in combinations(tag_list, 2))
+    return Counter(
+        combo for tag_list in tags for combo in combinations(tag_list, ntags)
+    )
+
 
 if __name__ == "__main__":
     # Read the data
@@ -170,3 +178,6 @@ if __name__ == "__main__":
     ]
     dat_popular_tags.to_csv("data/dat.csv", index=False)
     print(dat_popular_tags.head())
+
+    # combination of popular tags
+    combo = get_tag_combinations(dat_popular_tags["popular_tags"], ntags = 3)
