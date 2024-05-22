@@ -151,6 +151,28 @@ def get_tag_combinations(tags: List[List[str]], ntags: int = 2) -> Counter:
     )
 
 
+def get_specific_tag_combinations(tags: Counter, selected_tags: List[str]) -> Counter:
+    """
+    Returns a Counter object with combinations that include any of the selected tags.
+
+    Args:
+        tags (Counter): A Counter object where keys are tuples representing combinations of tags,
+                        and values are the counts of each combination.
+        selected_tags (List[str]): A list of tags to be selected. Note that the selected tags are not paired.
+
+    Returns:
+        Counter: A Counter object with keys as combinations that include any of the selected tags,
+                 and values as the counts of each combination.
+    """
+    return Counter(
+        dict(
+            item
+            for item in tags.items()
+            if any(tag in item[0] for tag in selected_tags)
+        )
+    )
+
+
 if __name__ == "__main__":
     # Read the data
     dat = pd.read_csv("data/porn-with-dates-2022.csv")
@@ -180,4 +202,4 @@ if __name__ == "__main__":
     print(dat_popular_tags.head())
 
     # combination of popular tags
-    combo = get_tag_combinations(dat_popular_tags["popular_tags"], ntags = 3)
+    combo = get_tag_combinations(dat_popular_tags["popular_tags"], ntags=3)
