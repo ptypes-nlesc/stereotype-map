@@ -56,20 +56,21 @@ from sklearn.metrics.pairwise import cosine_similarity
 sim = cosine_similarity(stereotype_emb, tag_emb)
 from scipy.spatial.distance import cdist
 
-similarities = 1 - cdist(tag_embeddings, stereotype_embeddings, metric="cosine")
+# another way to calculate cosine similarity
+similarities = 1 - cdist(tag_emb, stereotype_emb, metric="cosine")
 
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
 # temporary tags and stereotypes
-s = ["a", "b", "c", "d", "e", "f", "g"]
-t = ["a", "b", "c", "d", "e", "f", "g"]
+s = ["1", "2", "3", "4", "5", "6", "7"]
+t = ["a", "b", "c", "d", "e"]
 
 # Convert similarities to a DataFrame for better visualization
 similarity_df = pd.DataFrame(similarities, index=t, columns=s)
 
-# Plot the heatmap
+# Plot the heatmap of similarities
 plt.figure(figsize=(10, 8))
 sns.heatmap(similarity_df, annot=True, cmap="coolwarm", fmt=".2f")
 plt.title("Cosine Similarity between Tags and Stereotypes")
