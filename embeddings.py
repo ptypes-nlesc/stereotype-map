@@ -8,11 +8,15 @@ Steps:
 """
 
 import json
-import string
 
+import matplotlib.pyplot as plt
 import nltk
+import pandas as pd
+import seaborn as sns
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
+from sentence_transformers import SentenceTransformer
+from sklearn.metrics.pairwise import cosine_similarity
 
 nltk.download("stopwords")
 nltk.download("punkt")
@@ -30,53 +34,35 @@ def preprocess(text):
 with open("data/stereotypes.json", "r") as file:
     stereotypes = json.load(file)
 
-stereotypes = [preprocess(stype) for stype in stereotypes]
+stereotypes_v = [preprocess(stype) for stype in stereotypes.values()]
 
 with open("data/tags.json", "r") as file:
     tags = json.load(file)
 
-tags = [preprocess(tag) for tag in tags]
+tags_v = [preprocess(tag) for tag in tags.values()]
 
 # word embeddings
 # pre-trained BERT
 # Other options are Word2Vec (skip-gram), GloVe, FastText, etc.
 
-from sentence_transformers import SentenceTransformer
-
 # Load pre-trained model
 model = SentenceTransformer("bert-base-nli-mean-tokens")
 
 # Generate embeddings
-stereotype_emb = model.encode(stereotypes)
-tag_emb = model.encode(tags)
+stereotypes_emb = model.encode(stereotypes_v)
+tags_emb = model.encode(tags_v)
 
 # Calculate cosine similarity
-
-from sklearn.metrics.pairwise import cosine_similarity
-
 # Compute similarities
-sim = cosine_similarity(stereotype_emb, tag_emb)
-from scipy.spatial.distance import cdist
-
-# another way to calculate cosine similarity
-similarities = 1 - cdist(tag_emb, stereotype_emb, metric="cosine")
-
-import matplotlib.pyplot as plt
-import pandas as pd
-import seaborn as sns
-
-# temporary tags and stereotypes
-s = ["1", "2", "3", "4", "5", "6", "7"]
-t = ["a", "b", "c", "d", "e", "f", "g", "h"]
+sim = cosine_similarity(tags_emb, stereotypes_emb)
 
 # Convert similarities to a DataFrame for better visualization
-similarity_df = pd.DataFrame(similarities, index=t, columns=s)
+sim_df = pd.DataFrame(sim, index=tags.keys(), columns=stereotypes.keys())
 
 # Plot the heatmap of similarities
 plt.figure(figsize=(10, 8))
-sns.heatmap(similarity_df, annot=True, cmap="coolwarm", fmt=".2f")
-plt.title("Cosine Similarity between Tags and Stereotypes")
+sns.heatmap(sim_df, annot=True, cmap="coolwarm", fmt=".2f")
+plt.title("Cosine Similarity between Videos and Stereotypes")
 plt.xlabel("Stereotypes")
-plt.ylabel("Tags")
+plt.ylabel("Videos")
 plt.show()
-
