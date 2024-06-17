@@ -1,5 +1,5 @@
 """
-Link each stereotype to a list of tags and show their similarity
+Link each stereotype to a list of tags and show their similarity via word embeddings
 Steps:
 1. text preprocessing;
 2. embedding generation for stereotypes and tags using pre-trained embeddings,
@@ -26,6 +26,7 @@ def preprocess(text):
     return " ".join(tokens)
 
 
+# load data
 with open("data/stereotypes.json", "r") as file:
     stereotypes = json.load(file)
 
@@ -37,7 +38,8 @@ with open("data/tags.json", "r") as file:
 tags = [preprocess(tag) for tag in tags]
 
 # word embeddings
-# pre-trained BERT or Word2Vec/GloVe??
+# pre-trained BERT
+# Other options are Word2Vec (skip-gram), GloVe, FastText, etc.
 
 from sentence_transformers import SentenceTransformer
 
@@ -65,7 +67,7 @@ import seaborn as sns
 
 # temporary tags and stereotypes
 s = ["1", "2", "3", "4", "5", "6", "7"]
-t = ["a", "b", "c", "d", "e"]
+t = ["a", "b", "c", "d", "e", "f", "g", "h"]
 
 # Convert similarities to a DataFrame for better visualization
 similarity_df = pd.DataFrame(similarities, index=t, columns=s)
@@ -78,41 +80,3 @@ plt.xlabel("Stereotypes")
 plt.ylabel("Tags")
 plt.show()
 
-import networkx as nx
-
-# Create a graph
-G = nx.Graph()
-
-tags = t
-stereotypes = s
-
-# Add nodes for tags and stereotypes
-G.add_nodes_from(tags, bipartite=0)
-G.add_nodes_from(stereotypes, bipartite=1)
-
-# Add edges with weights based on similarity
-for i, tag in enumerate(tags):
-    for j, stereotype in enumerate(stereotypes):
-        weight = similarities[i, j]
-        if weight > 0.3:  # Only add edges with significant similarity
-            G.add_edge(tag, stereotype, weight=weight)
-
-# Position nodes using bipartite layout
-pos = nx.spring_layout(G, k=0.5, iterations=50)
-
-# Draw the graph
-plt.figure(figsize=(12, 8))
-edges = G.edges(data=True)
-weights = [edge[2]["weight"] for edge in edges]
-nx.draw(
-    G,
-    pos,
-    with_labels=True,
-    node_size=3000,
-    node_color="skyblue",
-    font_size=10,
-    font_weight="bold",
-)
-nx.draw_networkx_edges(G, pos, edge_color=weights, edge_cmap=plt.cm.Blues, width=2)
-plt.title("Network Graph of Cosine Similarity between Tags and Stereotypes")
-plt.show()
