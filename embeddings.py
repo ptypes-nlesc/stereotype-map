@@ -31,12 +31,12 @@ def preprocess(text):
 
 
 # load data
-with open("data/stereotypes.json", "r") as file:
+with open("stereotypes.json", "r") as file:
     stereotypes = json.load(file)
 
 stereotypes_v = [preprocess(stype) for stype in stereotypes.values()]
 
-with open("data/tags.json", "r") as file:
+with open("tags.json", "r") as file:
     tags = json.load(file)
 
 tags_v = [preprocess(tag) for tag in tags.values()]
@@ -65,4 +65,5 @@ sns.heatmap(sim_df, annot=True, cmap="coolwarm", fmt=".2f")
 plt.title("Cosine Similarity between Videos and Stereotypes")
 plt.xlabel("Stereotypes")
 plt.ylabel("Videos")
+plt.savefig("plots/video_sterotype_heatmap.png")
 plt.show()
