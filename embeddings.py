@@ -1,3 +1,11 @@
+"""
+Link each stereotype to a list of tags and show their similarity via word embeddings
+Steps:
+1. text preprocessing;
+2. embedding generation for stereotypes and tags using pre-trained embeddings,
+3. similarity calculation using cosine similarity,
+4. visualization?
+"""
 import json
 import logging
 from typing import Dict, List
@@ -56,7 +64,7 @@ def load_and_preprocess_data(file_path: str) -> Dict[str, str]:
 def generate_embeddings(texts: Dict[str, str]) -> Dict[str, List[float]]:
     """Generate embeddings for preprocessed texts."""
     model = SentenceTransformer("bert-base-nli-mean-tokens")
-    return {key: model.encode([text])[0] for key, text in texts.items()}
+    return {key: model.encode([text])[0] for key, text in texts.items()}  # type: ignore
 
 
 def calculate_similarity(
