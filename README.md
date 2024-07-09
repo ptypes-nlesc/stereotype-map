@@ -3,7 +3,7 @@
 -->
 [![markdown-link-check](https://github.com/ptypes-nlesc/stereotype-map/actions/workflows/markdown-link-check.yaml/badge.svg)](https://github.com/ptypes-nlesc/data-profiling/actions/workflows/markdown-link-check.yaml) 
 [![python-package](https://github.com/ptypes-nlesc/stereotype-map/actions/workflows/python-package.yml/badge.svg)](https://github.com/ptypes-nlesc/data-profiling/actions/workflows/python-package.yml)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ptypes-nlesc_stereotype-map&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ptypes-nlesc_stereotype-map)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ptypes-nlesc_data-profiling&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ptypes-nlesc_data-profiling)
 
 ### Motivation
 We aim to connect stereotypes found in online pornography (through short text descriptions) with the most relevant video titles and tags. Additionally, we seek to explore and analyze the tags to understand their correlations and the frequency of their co-occurrence within the same videos, along with the reasons behind these patterns.
