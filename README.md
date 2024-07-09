@@ -22,7 +22,9 @@ pip install -r requirements.txt
 We expected data to be in a single csv file with each line containing a single video and columns containing meta data such as categories, upvotes, downvotes, and views.
 
 ### Examples
-Coming soon
+
+![alt text](https://github.com/ptypes-nlesc/stereotype-map/blob/main/plots/video_stereotype_graph.png)
+
 
 ### Documentation
 
