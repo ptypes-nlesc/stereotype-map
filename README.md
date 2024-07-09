@@ -5,10 +5,8 @@
 [![python-package](https://github.com/ptypes-nlesc/stereotype-map/actions/workflows/python-package.yml/badge.svg)](https://github.com/ptypes-nlesc/data-profiling/actions/workflows/python-package.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=ptypes-nlesc_stereotype-map&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=ptypes-nlesc_stereotype-map)
 
-Python scripts for the https://research-software-directory.org/projects/ptypes project. This includes pre-processing scripts to clean, tokenize, remove stopwords, lemmatize, and sample as well data exploration utilities.
-
 ### Motivation
-We want to associate stereotypes in online pornography (short text descripions) to the video tags they can be best described with. We also want to explore the tags and understand which tags are correlated and co-occur in the same video and why?
+We aim to connect stereotypes found in online pornography (through short text descriptions) with the most relevant video titles and tags. Additionally, we seek to explore and analyze the tags to understand their correlations and the frequency of their co-occurrence within the same videos, along with the reasons behind these patterns.
 
 ### Requirements
 Python 3.9+
