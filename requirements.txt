@@ -5,5 +5,3 @@ scipy==1.13.1
 seaborn==0.13.2
 sentence_transformers==2.7.0
 wordcloud==1.9.3
-sphinx==7.3.7
-
