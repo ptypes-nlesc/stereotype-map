@@ -10,7 +10,10 @@
 [![fair-software badge](https://img.shields.io/badge/fair--software.eu-%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8F%20%20%E2%97%8B-yellow)](https://fair-software.eu)
 
 ### Motivation
-We aim to connect stereotypes found in online pornography (through short text descriptions) with the most relevant video titles and tags. Additionally, we seek to explore and analyze the tags to understand their correlations and the frequency of their co-occurrence within the same videos, along with the reasons behind these patterns.
+We aim to connect stereotypes that are found in online pornography (through short text descriptions) and videos that contain that stereotype (titles and tags). Additionally, we seek to explore and analyse the tags: 
+- to understand their correlations;
+- the frequency of their co-occurrence within the same videos;
+- the reasons behind these patterns.
 
 ### Requirements
 Python 3.9+
