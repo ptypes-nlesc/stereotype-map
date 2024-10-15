@@ -1,15 +1,11 @@
 """
-Link each stereotype to a list of tags and show their similarity via word embeddings
-Steps:
-1. text preprocessing;
-2. embedding generation for stereotypes and tags using pre-trained embeddings,
-3. similarity calculation using cosine similarity,
-4. visualization?
+Determine the similarity between video tags and predefined stereotypes by leveraging word embeddings
 """
 
 import json
 import logging
 from typing import Dict, List
+import os
 
 import matplotlib.pyplot as plt
 import networkx as nx
@@ -24,13 +20,16 @@ from sklearn.metrics.pairwise import cosine_similarity
 # Constants for file paths
 STEREOTYPES_JSON_PATH = "stereotypes.json"
 TAGS_JSON_PATH = "tags.json"
-PLOTS_PATH = "plots/"
 
 # Configure logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
+def ensure_directory_exists(directory: str):
+    """Ensure that a directory exists; if not, create it."""
+    if not os.path.exists(directory):
+        os.makedirs(directory)
 
 def download_nltk_data():
     """Download necessary NLTK data if not already present."""
@@ -82,21 +81,18 @@ def load_and_preprocess_data(file_path: str) -> Dict[str, str]:
         logging.error("File %s not found.", file_path)
         return {}
 
-
-def generate_embeddings(texts: Dict[str, str]) -> Dict[str, List[float]]:
-    """
-    Generate embeddings for a dictionary of texts.
-
-    Parameters:
-    - texts (Dict[str, str]): A dictionary where the keys are identifiers and the values are the texts for which embeddings will be generated.
-
-    Returns:
-    - Dict[str, List[float]]: A dictionary where the keys are the same identifiers from the input and the values are the generated embeddings as lists of floats.
-    """
-    model = SentenceTransformer("bert-base-nli-mean-tokens")
-    return {key: model.encode([text])[0] for key, text in texts.items()}  # type: ignore
-
-
+def generate_embeddings(texts: Dict[str, str], model_name: str) -> Dict[str, List[float]]:
+    """Generate embeddings for a dictionary of texts."""
+    try:
+        model = SentenceTransformer(model_name)
+        return {
+            key: model.encode(text, show_progress_bar=False).tolist()
+            for key, text in texts.items()
+        }
+    except Exception as e:
+        logging.error("Error loading model: %s", e)
+        return {}
+    
 def calculate_similarity(
     tags_emb: Dict[str, List[float]], stereotypes_emb: Dict[str, List[float]]
 ) -> pd.DataFrame:
@@ -115,19 +111,19 @@ def calculate_similarity(
     sim_matrix = cosine_similarity(tags_values, stereotypes_values)
     return pd.DataFrame(sim_matrix, index=tags_keys, columns=stereotypes_keys)
 
-
-def plot_heatmap(sim_df: pd.DataFrame):
+def plot_heatmap(sim_df: pd.DataFrame, file_name: str):
+    ensure_directory_exists("plots")
     plt.figure(figsize=(10, 8))
     sns.heatmap(sim_df, annot=True, cmap="coolwarm", fmt=".2f")
     plt.title("Cosine Similarity between Videos and Stereotypes")
     plt.xlabel("Stereotypes")
     plt.ylabel("Videos")
-    plt.savefig(f"{PLOTS_PATH}video_stereotype_heatmap.png")
+    plt.savefig(f"plots/{file_name}")
     plt.show()
 
 
 def create_network_graph(
-    tags: Dict[str, str], stereotypes: Dict[str, str], sim: pd.DataFrame
+    tags: Dict[str, str], stereotypes: Dict[str, str], sim: pd.DataFrame, file_name: str
 ):
     """
     Create and plot a network graph based on similarity scores between tags and stereotypes.
@@ -136,9 +132,11 @@ def create_network_graph(
     - tags (Dict[str, str]): A dictionary where keys are tag names and values are their descriptions.
     - stereotypes (Dict[str, str]): A dictionary where keys are stereotype names and values are their descriptions.
     - sim (pd.DataFrame): A DataFrame containing the cosine similarity scores between tags and stereotypes.
+    - file_name (str): The name of the file to save the network graph plot.
 
     The function generates a network graph where nodes represent tags and stereotypes, and edges represent the similarity scores between them. Nodes are grouped by type (tag or stereotype), and edge thickness is proportional to the similarity score.
     """
+    ensure_directory_exists("plots")
     G = nx.Graph()
     G.add_nodes_from(tags.keys(), bipartite=0)
     G.add_nodes_from(stereotypes.keys(), bipartite=1)
@@ -166,7 +164,7 @@ def create_network_graph(
     plt.title(
         "Network Graph of Cosine Similarity between Tags and Stereotypes"
     )
-    plt.savefig(f"{PLOTS_PATH}video_stereotype_graph.png")
+    plt.savefig(f"plots/{file_name}")
     plt.show()
 
 
@@ -174,8 +172,8 @@ if __name__ == "__main__":
     download_nltk_data()
     stereotypes = load_and_preprocess_data(STEREOTYPES_JSON_PATH)
     tags = load_and_preprocess_data(TAGS_JSON_PATH)
-    stereotypes_emb = generate_embeddings(stereotypes)
-    tags_emb = generate_embeddings(tags)
+    stereotypes_emb = generate_embeddings(stereotypes, "distilroberta-base-paraphrase-v1")
+    tags_emb = generate_embeddings(tags, "distilroberta-base-paraphrase-v1")
     sim_df = calculate_similarity(tags_emb, stereotypes_emb)
-    plot_heatmap(sim_df)
-    create_network_graph(tags, stereotypes, sim_df)
+    plot_heatmap(sim_df, "heatmap.png")
+    create_network_graph(tags, stereotypes, sim_df, "network_graph.png")
