@@ -1,7 +1,7 @@
 import json
+import os
 
 import pandas as pd
-
 
 def df_to_json(df, key_col_index, value_col_index, filename="output.json"):
     """
@@ -43,6 +43,12 @@ def df_to_json(df, key_col_index, value_col_index, filename="output.json"):
     # Save the JSON string to a file
     with open(filename, "w", encoding="utf-8") as file:
         file.write(json_str)
+
+
+def ensure_directory_exists(directory: str):
+    """Ensure that a directory exists; if not, create it."""
+    if not os.path.exists(directory):
+        os.makedirs(directory)
 
 
 if __name__ == "__main__":
