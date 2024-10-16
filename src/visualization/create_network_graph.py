@@ -1,10 +1,9 @@
-import os
-import pandas as pd
-import networkx as nx
-import matplotlib.pyplot as plt
 from typing import Dict
 
-import src.utils.helpers as helpers
+import matplotlib.pyplot as plt
+import networkx as nx
+import pandas as pd
+
 
 def create_network_graph(
     tags: Dict[str, str],
@@ -24,7 +23,6 @@ def create_network_graph(
 
     The function generates a network graph where nodes represent tags and stereotypes, and edges represent the similarity scores between them. Nodes are grouped by type (tag or stereotype), and edge thickness is proportional to the similarity score.
     """
-    helpers.ensure_directory_exists("plots")
     G = nx.Graph()
     G.add_nodes_from(tags.keys(), bipartite=0)
     G.add_nodes_from(stereotypes.keys(), bipartite=1)
@@ -46,10 +44,10 @@ def create_network_graph(
         font_size=10,
         font_weight="bold",
     )
-    
+
     nx.draw_networkx_edges(
         G, pos, edge_color=weights, edge_cmap=plt.get_cmap("Blues"), width=2
     )
     plt.title("Network Graph of Cosine Similarity between Tags and Stereotypes")
-    plt.savefig(f"plots/{file_name}_{model_name}")
+    plt.savefig(f"{file_name}_{model_name}.png")
     plt.show()

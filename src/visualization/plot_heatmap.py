@@ -17,11 +17,10 @@ def plot_heatmap(df: pd.DataFrame, file_name: str, model_name: str):
     The function generates a heatmap where the rows represent video tags and the columns represent stereotypes.
     The heatmap is saved in the 'plots' directory with the specified file name and model name.
     """
-    helpers.ensure_directory_exists("plots")
     plt.figure(figsize=(10, 8))
     sns.heatmap(df, annot=True, cmap="coolwarm", fmt=".2f")
     plt.title("Cosine Similarity between Videos and Stereotypes")
     plt.xlabel("Stereotypes")
     plt.ylabel("Videos")
-    plt.savefig(f"plots/{file_name}_{model_name}")
+    plt.savefig(f"{file_name}_{model_name}.png")
     plt.show()
