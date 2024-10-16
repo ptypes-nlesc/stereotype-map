@@ -4,8 +4,8 @@ Determine the similarity between video tags and predefined stereotypes by levera
 
 import json
 import logging
-from typing import Dict, List
 import os
+from typing import Dict, List
 
 import matplotlib.pyplot as plt
 import networkx as nx
@@ -17,19 +17,17 @@ from nltk.tokenize import word_tokenize
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 
-# Constants for file paths
-STEREOTYPES_JSON_PATH = "stereotypes.json"
-TAGS_JSON_PATH = "tags.json"
-
 # Configure logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
+
 def ensure_directory_exists(directory: str):
     """Ensure that a directory exists; if not, create it."""
     if not os.path.exists(directory):
         os.makedirs(directory)
+
 
 def download_nltk_data():
     """Download necessary NLTK data if not already present."""
@@ -81,7 +79,10 @@ def load_and_preprocess_data(file_path: str) -> Dict[str, str]:
         logging.error("File %s not found.", file_path)
         return {}
 
-def generate_embeddings(texts: Dict[str, str], model_name: str) -> Dict[str, List[float]]:
+
+def generate_embeddings(
+    texts: Dict[str, str], model_name: str
+) -> Dict[str, List[float]]:
     """Generate embeddings for a dictionary of texts."""
     try:
         model = SentenceTransformer(model_name)
@@ -92,7 +93,8 @@ def generate_embeddings(texts: Dict[str, str], model_name: str) -> Dict[str, Lis
     except Exception as e:
         logging.error("Error loading model: %s", e)
         return {}
-    
+
+
 def calculate_similarity(
     tags_emb: Dict[str, List[float]], stereotypes_emb: Dict[str, List[float]]
 ) -> pd.DataFrame:
@@ -111,19 +113,24 @@ def calculate_similarity(
     sim_matrix = cosine_similarity(tags_values, stereotypes_values)
     return pd.DataFrame(sim_matrix, index=tags_keys, columns=stereotypes_keys)
 
-def plot_heatmap(sim_df: pd.DataFrame, file_name: str):
+
+def plot_heatmap(df: pd.DataFrame, file_name: str, model_name: str):
     ensure_directory_exists("plots")
     plt.figure(figsize=(10, 8))
-    sns.heatmap(sim_df, annot=True, cmap="coolwarm", fmt=".2f")
+    sns.heatmap(df, annot=True, cmap="coolwarm", fmt=".2f")
     plt.title("Cosine Similarity between Videos and Stereotypes")
     plt.xlabel("Stereotypes")
     plt.ylabel("Videos")
-    plt.savefig(f"plots/{file_name}")
+    plt.savefig(f"plots/{file_name}_{model_name}")
     plt.show()
 
 
 def create_network_graph(
-    tags: Dict[str, str], stereotypes: Dict[str, str], sim: pd.DataFrame, file_name: str
+    tags: Dict[str, str],
+    stereotypes: Dict[str, str],
+    df: pd.DataFrame,
+    file_name: str,
+    model_name: str,
 ):
     """
     Create and plot a network graph based on similarity scores between tags and stereotypes.
@@ -142,7 +149,7 @@ def create_network_graph(
     G.add_nodes_from(stereotypes.keys(), bipartite=1)
     for i, tag in enumerate(tags.keys()):
         for j, stereotype in enumerate(stereotypes.keys()):
-            weight = sim.iloc[i, j]
+            weight = df.iloc[i, j]
             if weight > 0.3:
                 G.add_edge(tag, stereotype, weight=weight)
     pos = nx.spring_layout(G, k=0.5, iterations=50)
@@ -158,22 +165,7 @@ def create_network_graph(
         font_size=10,
         font_weight="bold",
     )
-    nx.draw_networkx_edges(
-        G, pos, edge_color=weights, edge_cmap=plt.cm.Blues, width=2
-    )
-    plt.title(
-        "Network Graph of Cosine Similarity between Tags and Stereotypes"
-    )
-    plt.savefig(f"plots/{file_name}")
+    nx.draw_networkx_edges(G, pos, edge_color=weights, edge_cmap=plt.cm.Blues, width=2)
+    plt.title("Network Graph of Cosine Similarity between Tags and Stereotypes")
+    plt.savefig(f"plots/{file_name}_{model_name}")
     plt.show()
-
-
-if __name__ == "__main__":
-    download_nltk_data()
-    stereotypes = load_and_preprocess_data(STEREOTYPES_JSON_PATH)
-    tags = load_and_preprocess_data(TAGS_JSON_PATH)
-    stereotypes_emb = generate_embeddings(stereotypes, "distilroberta-base-paraphrase-v1")
-    tags_emb = generate_embeddings(tags, "distilroberta-base-paraphrase-v1")
-    sim_df = calculate_similarity(tags_emb, stereotypes_emb)
-    plot_heatmap(sim_df, "heatmap.png")
-    create_network_graph(tags, stereotypes, sim_df, "network_graph.png")

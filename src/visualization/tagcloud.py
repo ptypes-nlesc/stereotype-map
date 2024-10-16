@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from wordcloud import WordCloud
 
-import clean
+import src.data.clean as clean
 
 df = pd.read_csv("data/porn-with-dates-2022.csv")
 df["tags"] = df["categories"].apply(clean.extract_tags)

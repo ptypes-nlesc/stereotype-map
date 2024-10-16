@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
-import clean
+import src.data.clean as clean
 
 # if __name__ == "__main__":
 df = pd.read_csv("data/porn-with-dates-2022.csv")

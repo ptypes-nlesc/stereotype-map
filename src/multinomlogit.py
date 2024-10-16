@@ -4,9 +4,9 @@ import pickle
 import matplotlib.pyplot as plt
 import pandas as pd
 
-import clean
+import src.data.clean as clean
 import embeddings
-import helpers
+import src.utils.helpers as helpers
 
 importlib.reload(helpers)
 
