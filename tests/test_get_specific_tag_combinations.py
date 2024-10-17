@@ -1,6 +1,6 @@
 from collections import Counter
 
-from clean import get_specific_tag_combinations
+from src.data.clean import get_specific_tag_combinations
 
 
 def test_get_specific_tag_combinations():

@@ -1,5 +1,5 @@
 import pandas as pd
-from clean import get_tag_counts
+from src.data.clean import get_tag_counts
 
 def test_get_tag_counts():
     df_flat_tag = pd.DataFrame({'tag': ['tag1', 'tag2', 'tag1', 'tag3', 'tag2', 'tag2']})

@@ -1,4 +1,4 @@
-from clean import remove_tag
+from src.data.clean import remove_tag
 
 
 def test_remove_tag():
