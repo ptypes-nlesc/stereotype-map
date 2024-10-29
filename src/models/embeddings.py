@@ -4,11 +4,13 @@ Determine the similarity between video tags and predefined stereotypes by levera
 
 import json
 import logging
+import re
 from typing import Dict, List
 
 import nltk
 import pandas as pd
 from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer
 from nltk.tokenize import word_tokenize
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -44,6 +46,16 @@ def preprocess(text: str) -> str:
     return " ".join(
         [word for word in tokens if word.isalpha() and word not in stop_words]
     )
+
+
+def clean_tokenize_and_stem(text):
+    stemmer = PorterStemmer()
+    stop_words = set(stopwords.words("english"))
+    # Remove punctuation, numbers, and convert to lowercase
+    text = re.sub(r"[^\w\s]", "", text.lower())  # Remove punctuation
+    text = re.sub(r"\d+", "", text)  # Remove numbers
+    words = [stemmer.stem(word) for word in text.split() if word not in stop_words]
+    return words
 
 
 def load_and_preprocess_data(file_path: str) -> Dict[str, str]:

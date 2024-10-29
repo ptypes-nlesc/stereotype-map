@@ -8,10 +8,6 @@ from typing import List, Set
 
 import pandas as pd
 
-# TODO refactor to class
-# TODO consider using argparse
-# TODO replace space with underscore in tags
-
 
 def extract_tags(categories: str) -> List[str]:
     """
@@ -171,35 +167,3 @@ def get_specific_tag_combinations(tags: Counter, selected_tags: List[str]) -> Co
             if any(tag in item[0] for tag in selected_tags)
         )
     )
-
-
-if __name__ == "__main__":
-    # Read the data
-    dat = pd.read_csv("data/porn-with-dates-2022.csv")
-
-    # Extract tags
-    dat["tags"] = dat["categories"].apply(extract_tags)
-
-    # Remove unwanted tag
-    dat["tags"] = dat["tags"].apply(remove_tag)
-
-    # Flatten tags into a DataFrame
-    dat_flat_tag = flatten_tags(dat["tags"])  # type: ignore
-
-    # Get popular tags
-    popular_tags = get_popular_tags(dat_flat_tag)
-
-    # Filter tags based on popular tags
-    dat["popular_tags"] = dat["tags"].apply(
-        lambda tag_list: filter_popular_tags(tag_list, popular_tags)
-    )
-
-    # Filter DataFrame to include only rows where 'popular_tags' is not empty
-    dat_popular_tags = dat.loc[
-        dat["popular_tags"].apply(lambda tag_list: tag_list != [])
-    ]
-    dat_popular_tags.to_csv("data/dat.csv", index=False)
-    print(dat_popular_tags.head())
-
-    # combination of popular tags
-    combo = get_tag_combinations(dat_popular_tags["popular_tags"], ntags=3)
