@@ -19,6 +19,8 @@ from sklearn.metrics.pairwise import cosine_similarity
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
+stemmer = PorterStemmer()
+stop_words = set(stopwords.words("english"))
 
 
 def download_nltk_data():
@@ -31,6 +33,7 @@ def download_nltk_data():
             nltk.download(data)
 
 
+# TODO refactor preprocess and clean_tok..1 and 2 to remove overlap
 def preprocess(text: str) -> str:
     """
     Tokenize and clean the input text by removing stopwords and non-alphabetic tokens.
@@ -48,13 +51,40 @@ def preprocess(text: str) -> str:
     )
 
 
-def clean_tokenize_and_stem(text):
-    stemmer = PorterStemmer()
-    stop_words = set(stopwords.words("english"))
+def clean_tokenize_and_stem(text: str) -> list:
+    """
+    Clean, tokenize, and stem the input text by removing stopwords, punctuation, and numbers.
+
+    Parameters:
+    - text (str): The input text to be processed.
+
+    Returns:
+    - list: A list of stemmed words after cleaning and tokenization.
+            The list contains only words that are not stopwords.
+    """
     # Remove punctuation, numbers, and convert to lowercase
     text = re.sub(r"[^\w\s]", "", text.lower())  # Remove punctuation
-    text = re.sub(r"\d+", "", text)  # Remove numbers
+    text = re.sub(r"\d+", "", text)  # Remove number
     words = [stemmer.stem(word) for word in text.split() if word not in stop_words]
+
+    return words
+
+
+# Function to clean and tokenize titles, removing "scene" phrases
+def clean_and_tokenize(text) -> list:
+    """
+    Parameters:
+    - text (str): The input text to be processed.
+
+    Returns:
+    - list: A list of cleaned and tokenized words
+    """
+    # Remove "scene" followed by a number
+    text = re.sub(r"scene \d+", "", text.lower())
+    # Remove punctuation
+    text = re.sub(r"[^\w\s]", "", text)
+    # Split into words and remove stopwords
+    words = [word for word in text.split() if word not in stop_words]
     return words
 
 
