@@ -13,8 +13,8 @@
 We aim to connect stereotypes found in online pornography (through short text descriptions) with the most relevant video titles and tags. Additionally, we seek to explore and analyze the tags to understand their correlations and the frequency of their co-occurrence within the same videos, along with the reasons behind these patterns.
 
 ### Requirements
-Python 3.9+
-Python environement can be isolated using venv.
+Python >=3.9 and <3.13
+Python environment can be isolated using venv.
 
 ```bash
 python -m venv venv
