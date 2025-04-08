@@ -1,4 +1,4 @@
-from clean import extract_tags
+from src.data.clean import extract_tags
 
 
 def test_extract_tags():

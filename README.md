@@ -16,8 +16,8 @@ We aim to connect stereotypes that are found in online pornography (through shor
 - the reasons behind these patterns.
 
 ### Requirements
-Python 3.9+
-Python environement can be isolated using venv.
+Python >=3.9 and <3.13
+Python environment can be isolated using venv.
 
 ```bash
 python -m venv venv

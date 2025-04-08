@@ -1,4 +1,4 @@
-from clean import get_tag_combinations
+from src.data.clean import get_tag_combinations
 
 
 def test_get_tag_combination():
