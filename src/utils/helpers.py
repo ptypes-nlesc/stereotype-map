@@ -7,7 +7,7 @@ import pandas as pd
 
 def df_to_json(df, key_col_name, value_col_name, filename="output.json"):
     """
-    Convert specified columns of a DataFrame to a JSON string and saves it to a file.
+    Convert a DataFrame column to a JSON string and save it to a file.
 
     This function takes a DataFrame and two column names, converts the specified columns
     to a dictionary where one column's values are used as keys and the other column's values
@@ -72,8 +72,8 @@ if __name__ == "__main__":
     # Example usage
     df = pd.DataFrame(
         {
-            "col1": ["Video1", "Video2"],
-            "col2": [["Tag1", "Tag2", "Tag3"], ["Tag3", "Tag4"]],
+            "col1": ['Video1', 'Video2'],
+            "col2": [['Tag1', 'Tag2', 'Tag3'], ['Tag3', 'Tag4']],
         }
     )
     df_to_json(df, "col1", "col2", "output.json")

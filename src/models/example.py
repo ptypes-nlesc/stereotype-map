@@ -10,9 +10,6 @@ STEREOTYPES_JSON_PATH = "src/models/stereotypes.json"
 TAGS_JSON_PATH = "src/models/tags.json"
 MODEL_NAME = "distilroberta-base-paraphrase-v1"
 
-# TODO try different models
-# e.g. "bert-base-nli-mean-tokens"
-
 emb.download_nltk_data()
 stereotypes = emb.load_and_preprocess_data(STEREOTYPES_JSON_PATH)
 tags = emb.load_and_preprocess_data(TAGS_JSON_PATH)
