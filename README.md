@@ -31,7 +31,7 @@ We expected data to be in a single csv file with each line containing a single v
 ### Examples
 
 ![alt text](https://github.com/ptypes-nlesc/stereotype-map/blob/main/plots/video_stereotype_graph.png)
-
+![alt text](https://github.com/ptypes-nlesc/stereotype-map/blob/main/plots/heatmap_distilroberta-base-paraphrase-v1.png)
 
 ### Documentation
 
