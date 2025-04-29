@@ -2,12 +2,13 @@ import pandas as pd
 from collections import defaultdict
 import seaborn as sns
 import matplotlib.pyplot as plt
+import os
 
 
 # Define controlled sets of nouns
 GENDERED_NOUNS = {"girl", "boy", "woman", "man", "mom", "dad", "wife", "husband"}
 RACIALIZED_NOUNS = {"black", "white", "asian", "latina", "indian", "ebony", "blonde"}
-
+plot_output_path = "plots"
 
 def prepare_pair_df(pair_df):
     """Split adjective–noun tuples and expand into new columns."""
@@ -39,6 +40,7 @@ def plot_heatmap(pair_df, noun_subset, top_n=20, title="Adjective–Noun Heatmap
     plt.xlabel("Noun")
     plt.ylabel("Adjective")
     plt.tight_layout()
+    plt.savefig(os.path.join(plot_output_path, "heatmap-adj-noun-pairs-counts.eps"), bbox_inches="tight")
     plt.show()
 
 
