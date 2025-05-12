@@ -1,13 +1,17 @@
 import pandas as pd
 from collections import defaultdict
+from src.data.lexicons import female_roles, female_nouns, male_nouns, male_roles, racialized_nouns
+
 import seaborn as sns
 import matplotlib.pyplot as plt
 import os
 
 
 # Define controlled sets of nouns
-GENDERED_NOUNS = {"girl", "boy", "woman", "man", "mom", "dad", "wife", "husband"}
-RACIALIZED_NOUNS = {"black", "white", "asian", "latina", "indian", "ebony", "blonde"}
+GENDERED_NOUNS = female_nouns | male_nouns
+RACIALIZED_NOUNS = racialized_nouns
+
+
 plot_output_path = "plots"
 
 def prepare_pair_df(pair_df):
@@ -41,6 +45,7 @@ def plot_heatmap(pair_df, noun_subset, top_n=20, title="Adjective–Noun Heatmap
     plt.ylabel("Adjective")
     plt.tight_layout()
     plt.savefig(os.path.join(plot_output_path, "heatmap-adj-noun-pairs-counts.eps"), bbox_inches="tight")
+    plt.savefig(os.path.join(plot_output_path, "heatmap-adj-noun-pairs-counts.png"), bbox_inches="tight")
     plt.show()
 
 
