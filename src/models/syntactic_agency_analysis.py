@@ -1,19 +1,15 @@
 import pandas as pd
 from collections import Counter, defaultdict
 
-# --- Gendered Terms and Dependencies ---
-
-FEMALE_TERMS = {"girl", "woman", "wife", "mom", "her", "she"}
-MALE_TERMS = {"boy", "man", "husband", "dad", "him", "he"}
 AGENCY_ROLES = {"nsubj", "nsubjpass", "dobj"}
-
 
 # --- Role Frequency Analysis ---
 
-def extract_grammatical_roles(df: pd.DataFrame) -> pd.DataFrame:
+def extract_grammatical_roles(df: pd.DataFrame, FEMALE_NOUNS, MALE_NOUNS) -> pd.DataFrame:
     """
     Count how often gendered terms appear in subject/object positions.
     Returns a DataFrame with absolute counts and gender ratios.
+    FEMALE_NOUNS and MALE_NOUNS should be sets of lowercased terms.
     """
     counts = defaultdict(Counter)
 
@@ -21,9 +17,9 @@ def extract_grammatical_roles(df: pd.DataFrame) -> pd.DataFrame:
         for token, tag, dep in parsed:
             token_lower = token.lower()
             if dep in AGENCY_ROLES:
-                if token_lower in FEMALE_TERMS:
+                if token_lower in FEMALE_NOUNS:
                     counts["female"][dep] += 1
-                elif token_lower in MALE_TERMS:
+                elif token_lower in MALE_NOUNS:
                     counts["male"][dep] += 1
 
     result = pd.DataFrame(counts).fillna(0).astype(int)
@@ -32,19 +28,18 @@ def extract_grammatical_roles(df: pd.DataFrame) -> pd.DataFrame:
     result["male_ratio"] = result["male"] / result["total"]
     return result
 
-
 # --- Qualitative Example Extraction ---
 
 def extract_titles_by_dependency(df, gender_terms, dependency="dobj", max_examples=10):
     """
     Extracts example titles where a gendered token appears with a specific syntactic dependency.
-    
+
     Parameters:
         df (pd.DataFrame): DataFrame with 'title' and 'pos_title_with_deps'
-        gender_terms (set): e.g., FEMALE_TERMS
+        gender_terms (set): e.g., FEMALE_NOUNS or MALE_NOUNS
         dependency (str): "dobj", "nsubj", or "nsubjpass"
         max_examples (int): number of examples to extract
-    
+
     Returns:
         pd.DataFrame: matched titles and dependency info
     """
