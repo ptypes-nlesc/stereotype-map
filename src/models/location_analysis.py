@@ -7,19 +7,9 @@ import spacy
 # Load spaCy model once
 nlp = spacy.load("en_core_web_sm")
 
-# --- Configuration ---
-
-PLACE_NOUNS = {
-    "kitchen", "bathroom", "school", "hotel", "car", "office", "beach", "classroom",
-    "park", "gym", "public", "bedroom", "club", "bus", "library", "shower"
-}
-
-GENDERED_TERMS = {"girl", "woman", "wife", "mom", "her", "she", "boy", "man", "husband", "dad", "him", "he"}
-RACIALIZED_TERMS = {"black", "white", "asian", "latina", "indian", "ebony", "blonde"}
-PERSON_TERMS = GENDERED_TERMS | RACIALIZED_TERMS
-
 
 def extract_prep_phrase_locations(doc, place_vocab=None):
+    """Extract place nouns from prepositional object constructions."""
     locations = []
     for token in doc:
         if token.dep_ == "pobj" and token.head.dep_ == "prep":
@@ -30,18 +20,18 @@ def extract_prep_phrase_locations(doc, place_vocab=None):
     return locations
 
 
-
-def add_locations_from_titles(df, title_col="title", place_vocab=PLACE_NOUNS,
+def add_locations_from_titles(df, title_col="title", place_vocab=None,
                                cache_path="data/processed/locations.pkl"):
+    """Parse titles and extract location nouns, with caching."""
     os.makedirs(os.path.dirname(cache_path), exist_ok=True)
 
     if os.path.exists(cache_path):
-        print(f"🔄 Loading cached location data from {cache_path}")
+        print(f"Loading cached location data from {cache_path}")
         locations = pd.read_pickle(cache_path)
         df["locations"] = locations
         return df
 
-    print("⚙️ Extracting locations from titles using spaCy...")
+    print("Extracting locations from titles using spaCy...")
     locations = []
     for doc in tqdm(nlp.pipe(df[title_col].fillna(""), batch_size=1000),
                     total=len(df), desc="spaCy parsing (locations)"):
@@ -54,23 +44,46 @@ def add_locations_from_titles(df, title_col="title", place_vocab=PLACE_NOUNS,
     return df
 
 
-def location_person_cooccurrence(df, pos_col="pos_title_with_deps", person_terms=PERSON_TERMS):
+def location_identity_cooccurrence(
+    df, pos_col="pos_title_with_deps",
+    female_terms=None, male_terms=None, racialized_terms=None,
+    include_neutral=True
+):
     cooccurrence = defaultdict(Counter)
+
+    # Map tokens to identity groups
+    term_groups = {}
+    if female_terms:
+        term_groups.update({t.lower(): "female" for t in female_terms})
+    if male_terms:
+        term_groups.update({t.lower(): "male" for t in male_terms})
+    if racialized_terms:
+        term_groups.update({t.lower(): "racialized" for t in racialized_terms})
 
     for _, row in df.dropna(subset=[pos_col, "locations"]).iterrows():
         if not isinstance(row["locations"], list):
             continue
+
         locations = row["locations"]
         tokens = [t[0].lower() for t in row[pos_col] if isinstance(t, tuple)]
-        people = set(tokens).intersection(person_terms)
-        for person in people:
+        matched = set(t for t in tokens if t in term_groups)
+
+        if matched:
+            for token in matched:
+                group = term_groups[token]
+                for loc in locations:
+                    cooccurrence[group][loc] += 1
+        elif include_neutral:
             for loc in locations:
-                cooccurrence[person][loc] += 1
+                cooccurrence["neutral"][loc] += 1
 
-    return pd.DataFrame(cooccurrence).fillna(0).astype(int).T  # locations x people
+    return pd.DataFrame(cooccurrence).fillna(0).astype(int).T
 
 
-# --- Optional: Normalize and sort ---
 
 def normalize_and_sort(df):
+    """Row-normalize and sort index alphabetically."""
     return df.div(df.sum(axis=1), axis=0).sort_index()
+
+
+
