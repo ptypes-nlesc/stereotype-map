@@ -18,13 +18,14 @@ In this way we can better understand how stereotypes are not only embedded in vi
 
 ## 🧠 Methodology Overview
 
-This project analyzes metadata from over **200,000 PornHub videos** published between 2008 and 2018, focusing on **titles and tags** as classificatory tools that shape content visibility and access. The dataset also includes additional metadata such as:
+This project analyzes metadata from over **250,000 PornHub videos** published between 2008 and 2024, focusing on **titles and tags** as classificatory tools that shape content visibility and access. The dataset also includes additional metadata such as:
 
 - Publication date  
 - View counts  
-- Upvotes and downvotes  
+- Upvotes  
 - Production information  
-- Actor details  
+- Actor details
+- Categories  
 
 ---
 
